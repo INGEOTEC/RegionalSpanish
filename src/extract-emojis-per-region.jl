@@ -35,7 +35,7 @@ function main(lang)
 
     sort!(E, :emoji)
 
-    outname = "data/$lang/messages-by-region/emojis.tsv.gz"
+    outname = "data/$lang/emojis.tsv.gz"
     open(outname, "w") do f
         gz = GzipCompressorStream(f)
         CSV.write(gz, E, delim='\t')

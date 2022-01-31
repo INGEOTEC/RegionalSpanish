@@ -1,54 +1,43 @@
-using JLD2, Glob
+using JLD2, Glob, CSV, DataFrames, CodecZlib
 
-println(stderr, "NOT checked to work, I copied and pasted from repl")
-exit(0)
-
-
-VOC = let
+function compute_voc_table(lang)
     VOC = DataFrame(token=String[], country_code=String[], ndocs=Int[], idf=Float64[])
-    for k in K
-           Ndocs = 0
-           N = 0
-           for (cc, n, m, voc) in P
-               ndocs = get(voc, k, 0)
-               Ndocs += ndocs
-               N += n
-               prob = (ndocs + 1) / n
-               push!(VOC, (k, cc, ndocs, log(1 / prob)))
-           end
-           prob = (Ndocs + 1) / N
-           push!(VOC, (k, "ALL", Ndocs, log(1 / prob)))
-    end
-    VOC
-end
+    STATS = DataFrame(country_code=String[], n=Int[], rawvoc=Int[], voc=Int[])
+    ALL = Dict{String,Int}()
+    N = 0
 
-P = let 
-    P = []
-    
-    for filename in glob("data/messages-by-region/voc-*.jld2")
+    for filename in glob("data/$lang/messages-by-region/voc-*.jld2")
+        @info filename
         n, m, voc = load(filename, "n", "m", "voc")
         cc = basename(filename)[5:6]
-        push!(P, (cc, n, m, voc))
+        N += n
+        push!(STATS, (cc, n, m, length(voc)))
+        for (token, ndocs) in voc
+            prob = (ndocs + 1) / n
+            push!(VOC, (token, cc, ndocs, log(1 / prob)))
+            ALL[token] = get(ALL, token, 0) + ndocs
+        end
     end
-    P
+
+    for (token, ndocs) in ALL
+        prob = (ndocs + 1) / N
+        push!(VOC, (token, "ALL", ndocs, log(1 / prob)))
+    end
+    M = length(ALL)
+    push!(STATS, ("ALL", N, M, M))
+    sort!(VOC, :token)
+
+    @info "saving voc files"
+    open("data/$lang/voc.tsv.gz", "w") do f
+        gz = GzipCompressorStream(f)
+        CSV.write(gz, VOC, delim='\t')
+        close(gz)
+    end
+
+    open("data/$lang/voc-stats.tsv.gz", "w") do f
+        gz = GzipCompressorStream(f)
+        CSV.write(gz, STATS, delim='\t')
+        close(gz)
+    end
 end
 
-open("data/voc.tsv.gz", "w") do f
-    gz = GzipCompressorStream(f)
-    CSV.write(gz, VOC, delim='\t')
-    close(gz)
-end
-
-ndocs = [(a, b, c, length(d)) for (a, b, c, d) in P]
-M = unique(VOC.token) |> length
-push!(ndocs, ("ALL", all, M, M))
-D = DataFrame(country_code=String[], n=Int[], rawvoc=Int[], voc=Int[])
-for d in ndocs
-    push!(D, d)
-end
-
-open("data/voc-stats.tsv.gz", "w") do f
-    gz = GzipCompressorStream(f)
-    CSV.write(gz, D, delim='\t')
-    close(gz)
-end
