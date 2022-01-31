@@ -1,0 +1,12 @@
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
+Glob = "c27321d9-0574-5035-807b-f59d2c89b15c"
+InvertedFiles = "b20bd276-2c70-11ec-161a-3d1e1109a1c3"
+JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+SimilaritySearch = "053f045d-5466-53fd-b400-a066f88fe02a"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
+TextSearch = "7f6f6c8a-3b03-11e9-223d-e7d88259bd6c"
