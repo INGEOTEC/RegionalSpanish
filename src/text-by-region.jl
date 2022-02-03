@@ -1,6 +1,6 @@
 using CSV, Glob, DataFrames, CodecZlib
 
-function main(lang="SpanishLang")
+function save_text(lang="SpanishLang")
     L = glob("data/$lang/messages-by-region/*/*.tsv.gz")    
     outdir = "data/$lang/embeddings/"
     L = glob("data/$lang/messages-by-region/*/")

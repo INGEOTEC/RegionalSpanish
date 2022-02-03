@@ -678,9 +678,9 @@ uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [[deps.TextSearch]]
 deps = ["CategoricalArrays", "Intersections", "InvertedFiles", "LinearAlgebra", "Random", "SimilaritySearch", "SparseArrays", "StatsBase", "Test", "Unicode"]
-git-tree-sha1 = "8103b355e75e3f58dd8786a4e3c772173211aa66"
+path = "../TextSearch.jl"
 uuid = "7f6f6c8a-3b03-11e9-223d-e7d88259bd6c"
-version = "0.10.3"
+version = "0.10.4"
 
 [[deps.ThreadingUtilities]]
 deps = ["ManualMemory"]

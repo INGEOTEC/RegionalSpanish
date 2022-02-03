@@ -1,5 +1,7 @@
 using JSON, CodecZlib, Glob
 
+const VALID_CC = ["AR", "BO", "BR", "CA", "CL", "CO", "CR", "CU", "DO", "EC", "ES", "FR", "GB", "GQ", "GT", "HN", "MX", "NI", "PA", "PE", "PR", "PY", "SV", "US", "UY", "VE"]
+
 function parse_tweet(line)
     if length(line) == 0
         return nothing
@@ -48,14 +50,14 @@ function countrycode(tweet)
 end
 
 function preprocess(text)
-    text = lowercase(text)
-    text = replace(text, r"\s+"imx => " ")
-    text = replace(text, "&amp;" => "&") # "&gt;" => ">", "&lt;" => "<")
-    text = replace(text, r"(http.?://\S+)" => "_URL")
-    text = replace(text, r"#[\w\d]+" => "_HTAG")
+    #text = lowercase(text)
+    text = replace(text, r"[_\s]+"imx => " ")
+    text = replace(text, "&amp;" => "&", "&gt;" => ">", "&lt;" => "<")
+    text = replace(text, r"(https?://\S+)" => " _url ")
+    text = replace(text, r"#\S+" => " _htag ")
+    text = replace(text, r"@\S+" => " _usr ")
     text = replace(text, r"j(a|e|i)[jaei]+"imx => s"j\1j\1")
-    text = replace(text, r"h(a|e|i)[haei]+"imx => s"h\1h\1")
-    replace(text, r"((@\w+)\s?)+" => "_USR ")
+    replace(text, r"h(a|e|i)[haei]+"imx => s"h\1h\1")
 end
 
 function emojis(text_)
