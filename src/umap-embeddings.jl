@@ -45,7 +45,7 @@ function main(lang)
             index, vocab = create_or_load_index("$edir/index-$cc.jld2", "$edir/$cc.bin")
             U2 = UMAP_(index, 2; init=:random)  # spectral layout is too slow for the input-data's size
             U3 = UMAP_(U2, 3; init=:random)  # reuses input data
-            jldsave(embfile, e2=U2.embedding, e3=U3.embedding)
+            jldsave(embfile, e2=U2.embedding, e3=U3.embedding, vocab=vocab)
         end
     end
 end

@@ -70,10 +70,9 @@ function process_directory(files, outdir, outname)
     end
 end
 
-function process_directory_list(dirlist, lang, pat="GEO*.log.gz")
+function process_directory_list(dirlist, outdir, pat="GEO*.log.gz")
     println(stderr, "processing $(length(dirlist)) directories")
-    outdir = "data/$lang/messages"
-
+    
     for d in dirlist
         for cc in VALID_CC
             mkpath(joinpath(outdir, cc))
@@ -83,7 +82,7 @@ function process_directory_list(dirlist, lang, pat="GEO*.log.gz")
     @sync @distributed for d in dirlist
         outname = replace(d, "/" => "_") * ".tsv.gz"
         process_directory(glob(joinpath(d, pat)), outdir, outname)
-    end    
+    end
 end
 
 function main(lang)
@@ -91,7 +90,8 @@ function main(lang)
     append!(dirlist, glob("DatasetSpanish/17/*/*"))
     append!(dirlist, glob("DatasetSpanish/18/*/*"))
     append!(dirlist, glob("DatasetSpanish/19/*/*"))
-    process_directory_list(dirlist, lang)
+    outdir = "data/$lang/messages"
+    process_directory_list(dirlist, outdir)
 
     #=process_directory_list(glob("DatasetSpanish/17/*/*"), lang)
     process_directory_list(glob("DatasetSpanish/18/*/*"), lang)

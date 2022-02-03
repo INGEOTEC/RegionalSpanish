@@ -20,6 +20,5 @@ for filename in files
     C = [RGB(c...) for c in eachcol(C)]
 
     title = last(split(replace(basename(filename), ".jld2" => ""), '-'))
-    # scatter(X[1, :], X[2, :], c=C, label="", series_annotations=text.(cclist, :bottom), ms=6, ma=0.7, title=title)
     display(scatter(X[1, :], X[2, :], c=C, label="", ms=6, ma=0.7, title=title, fmt=:png))
 end
