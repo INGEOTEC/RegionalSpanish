@@ -43,7 +43,6 @@ function main(lang)
         else
             index, vocab = create_index(valid_tokens, "$edir/$cc.vec")
             U2 = UMAP_(index, 2; n_neighbors=k, init=:random)
-            vocab = Dict(token => i for (i, token) in enumerate(vocab))
             jldsave(umapfile; U2, k, vocab)
             U2
         end
