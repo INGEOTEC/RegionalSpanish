@@ -36,7 +36,7 @@ def main(train, pretrained):
     if os.path.isfile(outname):
         return
         
-    model = fasttext.train_supervised(train, thread=4, wordNgrams=3, dim=300, pretrainedVectors=pretrained)
+    model = fasttext.train_supervised(train, epoch=5, thread=14, wordNgrams=3, dim=300, pretrainedVectors=pretrained)
     #model = fasttext.load_model("../embeddings/MX.bin")
     test = train.replace("-train", "-test")
     N, p, r = model.test(test)
