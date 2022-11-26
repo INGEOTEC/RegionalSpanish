@@ -31,13 +31,13 @@ end
 function main(lang)
     edir = "data/$lang/embeddings"
     cclist = [first(rsplit(basename(modelname), '.'; limit=2)) for modelname in glob("$edir/*.vec")]
-    common = CSV.read("data/$lang/common-tokens-per-region.tsv.gz", DataFrame, delim='\t')
+    common = CSV.read("data/$lang/voc/ALL.tsv.gz", DataFrame, delim='\t')
     subset!(common, :n_regions => n -> n .> 10)
     valid_tokens = Set(common.token)
-
+    k = 33
+    
     for cc in cclist
         cc == "GQ" && continue
-        k = 33
         knnsfile = joinpath(edir, "knns-common-tokens.cc=$cc.k=$k.h5")
         embfile = joinpath(edir, "umap-embeddings-common-tokens.cc=$cc.k=$k.h5")
         isfile(embfile) && continue
