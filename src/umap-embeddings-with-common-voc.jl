@@ -32,7 +32,7 @@ function main(lang)
     edir = "data/$lang/embeddings"
     cclist = [first(rsplit(basename(modelname), '.'; limit=2)) for modelname in glob("$edir/*.vec")]
     common = CSV.read("data/$lang/voc/ALL.tsv.gz", DataFrame, delim='\t')
-    subset!(common, :n_regions => n -> n .> 10)
+    subset!(common, :n_regions => n -> n .>= 5)
     valid_tokens = Set(common.token)
     k = 33
     
@@ -45,8 +45,17 @@ function main(lang)
         G, vocab = create_index(valid_tokens, "$edir/$cc.vec")
         knns, dists = allknn(G, k)
         jldsave(knnsfile; knns, dists, vocab, k)
-        U3 = fit(UMAP, G; maxoutdim=3, k, layout=RandomLayout(), tol=1e-4, n_epochs=100)
-        U2 = fit(U3, 2)
-        jldsave(embfile; e2=predict(U2), e3=predict(U3), vocab, k)
+        try
+            U3 = fit(UMAP, G; maxoutdim=3, k, layout=RandomLayout(), tol=1e-4, n_epochs=100)
+            U2 = fit(U3, 2)
+            jldsave(embfile; e2=predict(U2), e3=predict(U3), vocab, k)
+        catch e
+            if e isa ArgumentError
+                @info "ERROR computing UMAP for $cc -- small vocabularies wrt common voc are expected to fail"
+                @show length(valid_tokens), length(vocab)
+            else
+                rethrow()
+            end
+        end
     end
 end
